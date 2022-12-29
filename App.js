@@ -1,17 +1,17 @@
 import React from 'react';
-import { Text, SafeAreaView } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { Button } from 'react-native-paper';
+import Navigation from './src/navigation/Navigation';
+
+
 
 const App = () => {
   return (
     <PaperProvider>
-      <SafeAreaView>
-        <Text>Hola mundo</Text>
-        <Button icon="forward" mode="contained" onPress={() => console.log('Pressed')}>
-          Press me
-        </Button>
-      </SafeAreaView>
+      <NavigationContainer>
+        <Navigation />
+      </NavigationContainer>
     </PaperProvider>
   );
 }
