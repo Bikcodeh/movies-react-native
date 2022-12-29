@@ -8,7 +8,7 @@ const App = () => {
     <PaperProvider>
       <SafeAreaView>
         <Text>Hola mundo</Text>
-        <Button mode="contained" onPress={() => console.log('Pressed')}>
+        <Button icon="forward" mode="contained" onPress={() => console.log('Pressed')}>
           Press me
         </Button>
       </SafeAreaView>
