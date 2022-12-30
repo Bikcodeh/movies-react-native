@@ -8,7 +8,7 @@ import MoviesTheme from './src/theme/Theme';
 import PreferencesContext from './src/context/PreferencesContext';
 
 const App = () => {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState('dark');
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');

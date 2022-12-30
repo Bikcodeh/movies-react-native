@@ -2,8 +2,11 @@ import React, {useState} from 'react';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {StyleSheet} from 'react-native';
 import {Drawer, Text, Switch, TouchableRipple} from 'react-native-paper';
+import usePreferences from '../hooks/usePreferences';
 
 export default function DrawerContent(props) {
+  const {theme, ToggleTheme} = usePreferences();
+  console.log(theme, ToggleTheme);
   const [isActive, setisActive] = useState('home');
   const {navigation} = props;
   const onChangeScreen = screen => {
