@@ -1,12 +1,11 @@
 import React, {useState} from 'react';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Drawer, Text, Switch, TouchableRipple} from 'react-native-paper';
 import usePreferences from '../hooks/usePreferences';
 
 export default function DrawerContent(props) {
-  const {theme, ToggleTheme} = usePreferences();
-  console.log(theme, ToggleTheme);
+  const {theme, toggleTheme} = usePreferences();
   const [isActive, setisActive] = useState('home');
   const {navigation} = props;
   const onChangeScreen = screen => {
@@ -32,8 +31,25 @@ export default function DrawerContent(props) {
           onPress={() => onChangeScreen('news')}
         />
       </Drawer.Section>
+      <Drawer.Section title="Options">
+        <TouchableRipple>
+          <View style={styles.preference}>
+            <Text>Dark theme</Text>
+            <Switch value={theme === 'dark'} onChange={toggleTheme} />
+          </View>
+        </TouchableRipple>
+      </Drawer.Section>
     </DrawerContentScrollView>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  preference: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+});
