@@ -1,34 +1,42 @@
-import React, {useState} from 'react';
+import React, {useContext} from 'react';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {StyleSheet, View} from 'react-native';
 import {Drawer, Text, Switch, TouchableRipple} from 'react-native-paper';
 import usePreferences from '../hooks/usePreferences';
+import PreferencesContext from '../context/PreferencesContext';
 
 export default function DrawerContent(props) {
   const {theme, toggleTheme} = usePreferences();
-  const [isActive, setisActive] = useState('home');
   const {navigation} = props;
-  const onChangeScreen = screen => {
-    navigation.navigate(screen);
-    setisActive(screen);
-  };
+  const {drawerOptionSelected, setCurrentDrawerOption} =
+    useContext(PreferencesContext);
+
   return (
     <DrawerContentScrollView>
       <Drawer.Section>
         <Drawer.Item
           label="Home"
-          active={isActive === 'home'}
-          onPress={() => onChangeScreen('home')}
+          active={drawerOptionSelected === 'home'}
+          onPress={() => {
+            setCurrentDrawerOption('home');
+            navigation.navigate('home');
+          }}
         />
         <Drawer.Item
           label="Popular"
-          active={isActive === 'popular'}
-          onPress={() => onChangeScreen('popular')}
+          active={drawerOptionSelected === 'popular'}
+          onPress={() => {
+            setCurrentDrawerOption('popular');
+            navigation.navigate('popular');
+          }}
         />
         <Drawer.Item
           label="News"
-          active={isActive === 'news'}
-          onPress={() => onChangeScreen('news')}
+          active={drawerOptionSelected === 'news'}
+          onPress={() => {
+            setCurrentDrawerOption('news');
+            navigation.navigate('news');
+          }}
         />
       </Drawer.Section>
       <Drawer.Section title="Options">

@@ -9,6 +9,7 @@ export default function Navigation() {
   return (
     <Drawer.Navigator
       initialRouteName="Movies"
+      backBehavior="order"
       drawerContent={props => <DrawerContent {...props} />}>
       <Drawer.Screen name="Movies" component={StackNavigation} />
     </Drawer.Navigator>

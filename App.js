@@ -8,19 +8,26 @@ import MoviesTheme from './src/theme/Theme';
 import PreferencesContext from './src/context/PreferencesContext';
 
 const App = () => {
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState('light');
+  const [drawerOptionSelected, setDrawerOptionSelected] = useState('home');
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
+  const setCurrentDrawerOption = route => {
+    setDrawerOptionSelected(route);
+  };
+
   const preference = useMemo(
     () => ({
-      toggleTheme,
       theme,
+      toggleTheme,
+      drawerOptionSelected,
+      setCurrentDrawerOption,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [theme],
+    [theme, drawerOptionSelected],
   );
   return (
     <PreferencesContext.Provider value={preference}>
