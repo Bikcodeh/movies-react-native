@@ -1,5 +1,8 @@
 import React, {useMemo, useState} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {
+  NavigationContainer,
+  useNavigationContainerRef,
+} from '@react-navigation/native';
 import {Provider as PaperProvider} from 'react-native-paper';
 import Navigation from './src/navigation/Navigation';
 import {StatusBar} from 'react-native';
@@ -10,6 +13,7 @@ import PreferencesContext from './src/context/PreferencesContext';
 const App = () => {
   const [theme, setTheme] = useState('light');
   const [drawerOptionSelected, setDrawerOptionSelected] = useState('home');
+  const navRef = useNavigationContainerRef();
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
@@ -38,6 +42,7 @@ const App = () => {
             : MoviesTheme.DefaultThemePaper
         }>
         <NavigationContainer
+          ref={navRef}
           theme={
             theme === 'dark'
               ? MoviesTheme.DarkThemeNavigation
@@ -46,7 +51,7 @@ const App = () => {
           <StatusBar
             barStyle={theme === 'dark' ? 'dark-content' : 'light-content'}
           />
-          <Navigation />
+          <Navigation {...navRef} />
         </NavigationContainer>
       </PaperProvider>
     </PreferencesContext.Provider>

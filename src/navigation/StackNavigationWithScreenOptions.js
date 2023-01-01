@@ -38,7 +38,7 @@ export default function StackNavigation(props) {
         component={Home}
         options={{
           title: 'Home',
-          headerShown: false,
+          headerShown: true,
           headerRight: () => searchButton(),
           headerLeft: () => burgerMenu(),
           headerShadowVisible: false,
@@ -49,7 +49,7 @@ export default function StackNavigation(props) {
         component={Search}
         options={{
           title: 'Search',
-          headerShown: false,
+          headerShown: true,
           headerLeft: () => burgerMenu(),
           headerShadowVisible: false,
         }}
@@ -59,7 +59,7 @@ export default function StackNavigation(props) {
         component={Popular}
         options={{
           title: 'Popular',
-          headerShown: false,
+          headerShown: true,
           headerRight: () => searchButton(),
           headerLeft: () => burgerMenu(),
           headerShadowVisible: false,
@@ -70,7 +70,7 @@ export default function StackNavigation(props) {
         component={News}
         options={{
           title: 'News',
-          headerShown: false,
+          headerShown: true,
           headerRight: () => searchButton(),
           headerLeft: () => burgerMenu(),
           headerShadowVisible: false,
@@ -81,7 +81,7 @@ export default function StackNavigation(props) {
         component={Movie}
         options={{
           title: 'Movie',
-          headerShown: false,
+          headerShown: true,
           headerLeft: () => burgerMenu(),
           headerShadowVisible: false,
         }}
