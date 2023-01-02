@@ -1,25 +1,25 @@
 import React, {useContext} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import { NavigationProp, DrawerActions, NavigationHelpers } from "@react-navigation/native";
-import Home from '../screens/Home';
+import {IconButton} from 'react-native-paper';
 import Search from '../screens/Search';
 import Popular from '../screens/Popular';
 import News from '../screens/News';
 import Movie from '../screens/Movie';
-import {IconButton} from 'react-native-paper';
+import Home from '../screens/Home';
+import {Movie as MovieI} from '../interfaces/movieinterfaces';
 import {getActiveRouteState} from '../utils/RouteName';
 import PreferencesContext from '../context/PreferencesContext';
-import { DrawerScreenProps } from '@react-navigation/drawer';
+import {DrawerScreenProps} from '@react-navigation/drawer';
 
 export type RootStackParamList = {
-  home: undefined,
-  search: undefined,
-  news: undefined,
-  popular: undefined,
-  movie: undefined
-}
+  home: undefined;
+  search: undefined;
+  news: undefined;
+  popular: undefined;
+  movie: {movie: MovieI};
+};
 
-interface Props extends DrawerScreenProps<any>{}
+interface Props extends DrawerScreenProps<any> {}
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -41,7 +41,7 @@ export default function StackNavigation(props: Props) {
     <Stack.Navigator
       screenListeners={{
         state: e => {
-          const data = e.data as any
+          const data = e.data as any;
           const activeRoute = getActiveRouteState(data.state);
           setCurrentDrawerOption(activeRoute.name);
         },
