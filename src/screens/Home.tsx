@@ -3,15 +3,20 @@ import {View, ScrollView, StyleSheet} from 'react-native';
 import useNewMovies from '../hooks/useNewMovies';
 import {Title} from 'react-native-paper';
 import CarouselVertical from '../components/CarouselVertical';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../navigation/StackNavigation';
 
-export default function Home() {
+interface Props extends NativeStackScreenProps<RootStackParamList> {}
+
+export default function Home(props: Props) {
+  const {navigation} = props;
   const {isLoading, newMovies, hasError} = useNewMovies();
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       {newMovies && (
         <View style={styles.news}>
           <Title style={styles.newsTitle}>New Movies</Title>
-          <CarouselVertical movies={newMovies} />
+          <CarouselVertical movies={newMovies} navigation={navigation} />
         </View>
       )}
     </ScrollView>

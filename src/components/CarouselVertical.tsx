@@ -12,12 +12,15 @@ import {Text, Title} from 'react-native-paper';
 import {BASE_URL_IMG} from '../utils/constants';
 import {getGenresByMovie} from '../api/moviesApi';
 import axios, {AxiosError} from 'axios';
+import {RootStackParamList} from '../navigation/StackNavigation';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
 const ITEM_WIDTH = Math.round(WINDOW_WIDTH * 0.7);
 
 interface Props {
   movies: Movie[];
+  navigation: NativeStackNavigationProp<RootStackParamList>;
 }
 
 export default function CarouselVertical(props: Props) {
@@ -27,15 +30,18 @@ export default function CarouselVertical(props: Props) {
       data={props.movies}
       sliderWidth={WINDOW_WIDTH}
       itemWidth={ITEM_WIDTH}
-      renderItem={item => <RenderItem movie={item.item} />}
+      renderItem={item => {
+        return <RenderItem movie={item.item} navigation={props.navigation} />;
+      }}
     />
   );
 }
 interface RenderItemProps {
   movie: Movie;
+  navigation: NativeStackNavigationProp<RootStackParamList>;
 }
 
-const RenderItem = ({movie}: RenderItemProps) => {
+const RenderItem = ({movie, navigation}: RenderItemProps) => {
   const [genres, setGenres] = useState<string[]>([] as string[]);
   getGenresByMovie(movie.genre_ids)
     .then(data => setGenres(data))
@@ -49,7 +55,8 @@ const RenderItem = ({movie}: RenderItemProps) => {
     });
   const imageUrl = `${BASE_URL_IMG}/${movie.poster_path}`;
   return (
-    <TouchableWithoutFeedback onPress={() => console.log(movie)}>
+    <TouchableWithoutFeedback
+      onPress={() => navigation.navigate('movie', {movie})}>
       <View style={styles.card}>
         <Image style={styles.image} source={{uri: imageUrl}} />
         <Title style={styles.title}>{movie.title}</Title>

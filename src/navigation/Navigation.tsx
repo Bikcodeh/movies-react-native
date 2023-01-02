@@ -3,8 +3,8 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import StackNavigation from './StackNavigation';
 import DrawerContent from './DrawerContent';
 import {IconButton} from 'react-native-paper';
-import { NavigationContainerRefWithCurrent } from '@react-navigation/native';
-import { RootStackParamList } from './StackNavigation';
+import {NavigationContainerRefWithCurrent} from '@react-navigation/native';
+import {RootStackParamList} from './StackNavigation';
 
 const Drawer = createDrawerNavigator();
 
@@ -33,7 +33,8 @@ export default function Navigation(myprops: Props) {
         component={StackNavigation}
         options={{
           headerShown: true,
-          headerRight: () => routeName !== 'search' && searchButton(),
+          headerRight: () =>
+            routeName !== 'search' && routeName !== 'movie' && searchButton(),
           title: routeName.charAt(0).toUpperCase() + routeName.slice(1),
         }}
       />
