@@ -1,12 +1,12 @@
 import {API_HOST, API_KEY, LANG} from '../utils/constants.js';
 import axios from 'axios';
-import {GenresResponse} from '../interfaces/movieinterfaces';
+import {GenresResponse, Genre} from '../interfaces/movieinterfaces';
 
 export const moviesApi = axios.create({
   baseURL: API_HOST,
 });
 
-export function getGenresByMovie(genresId: Number[]) {
+export function getGenresByMovie(genresId: Number[]): Promise<string[]> {
   return moviesApi
     .get<GenresResponse>(
       `/genre/movie/list?api_key=${API_KEY}&language=${LANG}`,
@@ -22,4 +22,12 @@ export function getGenresByMovie(genresId: Number[]) {
       });
       return genres;
     });
+}
+
+export function getGenres(): Promise<Genre[]> {
+  return moviesApi
+    .get<GenresResponse>(
+      `/genre/movie/list?api_key=${API_KEY}&language=${LANG}`,
+    )
+    .then(response => response.data.genres);
 }

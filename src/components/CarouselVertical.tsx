@@ -14,6 +14,7 @@ import {getGenresByMovie} from '../api/moviesApi';
 import axios, {AxiosError} from 'axios';
 import {RootStackParamList} from '../navigation/StackNavigation';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useEffect} from 'react';
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
 const ITEM_WIDTH = Math.round(WINDOW_WIDTH * 0.7);
@@ -43,16 +44,20 @@ interface RenderItemProps {
 
 const RenderItem = ({movie, navigation}: RenderItemProps) => {
   const [genres, setGenres] = useState<string[]>([] as string[]);
-  getGenresByMovie(movie.genre_ids)
-    .then(data => setGenres(data))
-    .catch(err => {
-      const error = err as Error | AxiosError;
-      if (!axios.isAxiosError(error)) {
-        console.log(error);
-      } else {
-        console.log(error);
-      }
-    });
+
+  useEffect(() => {
+    getGenresByMovie(movie.genre_ids)
+      .then(data => setGenres(data))
+      .catch(err => {
+        const error = err as Error | AxiosError;
+        if (!axios.isAxiosError(error)) {
+          console.log(error);
+        } else {
+          console.log(error);
+        }
+      });
+  }, [movie]);
+
   const imageUrl = `${BASE_URL_IMG}/${movie.poster_path}`;
   return (
     <TouchableWithoutFeedback
