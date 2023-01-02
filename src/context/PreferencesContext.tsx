@@ -4,7 +4,7 @@ const PreferencesContext = createContext({
   theme: '',
   toggleTheme: () => {},
   drawerOptionSelected: '',
-  setCurrentDrawerOption: () => {},
+  setCurrentDrawerOption: (route: string) => {}
 });
 
 export default PreferencesContext;

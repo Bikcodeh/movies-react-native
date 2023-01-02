@@ -1,11 +1,13 @@
 import React, {useContext} from 'react';
-import {DrawerContentScrollView} from '@react-navigation/drawer';
+import {DrawerContentComponentProps, DrawerContentScrollView} from '@react-navigation/drawer';
 import {StyleSheet, View} from 'react-native';
 import {Drawer, Text, Switch, TouchableRipple} from 'react-native-paper';
 import usePreferences from '../hooks/usePreferences';
 import PreferencesContext from '../context/PreferencesContext';
 
-export default function DrawerContent(props) {
+interface Props extends DrawerContentComponentProps {}
+
+export default function DrawerContent(props: Props) {
   const {theme, toggleTheme} = usePreferences();
   const {navigation} = props;
   const {drawerOptionSelected, setCurrentDrawerOption} =
