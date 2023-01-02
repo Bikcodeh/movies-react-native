@@ -8,18 +8,19 @@ import Navigation from './src/navigation/Navigation';
 import {StatusBar} from 'react-native';
 
 import MoviesTheme from './src/theme/Theme';
+import {RootStackParamList} from './src/navigation/StackNavigation';
 import PreferencesContext from './src/context/PreferencesContext';
 
 const App = () => {
   const [theme, setTheme] = useState('light');
   const [drawerOptionSelected, setDrawerOptionSelected] = useState('home');
-  const navRef = useNavigationContainerRef();
+  const navRef = useNavigationContainerRef<RootStackParamList>();
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
-  const setCurrentDrawerOption = route => {
+  const setCurrentDrawerOption = (route: string) => {
     setDrawerOptionSelected(route);
   };
 

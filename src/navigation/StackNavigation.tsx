@@ -1,5 +1,6 @@
 import React, {useContext} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { NavigationProp, DrawerActions, NavigationHelpers } from "@react-navigation/native";
 import Home from '../screens/Home';
 import Search from '../screens/Search';
 import Popular from '../screens/Popular';
@@ -8,10 +9,21 @@ import Movie from '../screens/Movie';
 import {IconButton} from 'react-native-paper';
 import {getActiveRouteState} from '../utils/RouteName';
 import PreferencesContext from '../context/PreferencesContext';
+import { DrawerScreenProps } from '@react-navigation/drawer';
 
-const Stack = createNativeStackNavigator();
+export type RootStackParamList = {
+  home: undefined,
+  search: undefined,
+  news: undefined,
+  popular: undefined,
+  movie: undefined
+}
 
-export default function StackNavigation(props) {
+interface Props extends DrawerScreenProps<any>{}
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
+export default function StackNavigation(props: Props) {
   const {setCurrentDrawerOption} = useContext(PreferencesContext);
   const {navigation} = props;
   const searchButton = () => {
@@ -29,7 +41,8 @@ export default function StackNavigation(props) {
     <Stack.Navigator
       screenListeners={{
         state: e => {
-          const activeRoute = getActiveRouteState(e.data.state);
+          const data = e.data as any
+          const activeRoute = getActiveRouteState(data.state);
           setCurrentDrawerOption(activeRoute.name);
         },
       }}>
