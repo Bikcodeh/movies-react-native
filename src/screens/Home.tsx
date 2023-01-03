@@ -5,9 +5,10 @@ import {ActivityIndicator, Text, Title} from 'react-native-paper';
 import CarouselVertical from '../components/CarouselVertical';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/StackNavigation';
-import {Genre} from '../interfaces/movieinterfaces';
-import {getGenres} from '../api/moviesApi';
+import {Genre, Movie} from '../interfaces/movieinterfaces';
+import {getGenres, getMoviesByGenre} from '../api/moviesApi';
 import PreferencesContext from '../context/PreferencesContext';
+import axios, {AxiosError} from 'axios';
 
 const ACTION_GENRE_ID: number = 28;
 
@@ -17,7 +18,9 @@ export default function Home(props: Props) {
   const {navigation} = props;
   const {isLoading, newMovies} = useNewMovies();
   const [genres, setGenres] = useState<Genre[]>([]);
+  const [moviesByGenre, setMoviesByGenre] = useState<Movie[]>([]);
   const [genreSelected, setGenreSelected] = useState<number>(ACTION_GENRE_ID);
+  console.log(moviesByGenre);
   const onGenreSelected = (genreId: number) => {
     setGenreSelected(genreId);
   };
@@ -26,6 +29,19 @@ export default function Home(props: Props) {
   useEffect(() => {
     getGenres().then(data => setGenres(data));
   }, []);
+
+  useEffect(() => {
+    getMoviesByGenre(genreSelected)
+      .then(data => setMoviesByGenre(data))
+      .catch(err => {
+        const error = err as Error | AxiosError;
+        if (!axios.isAxiosError(error)) {
+          /*TODO: handle error */
+        } else {
+          /**TODO: handle error */
+        }
+      });
+  }, [genreSelected]);
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
