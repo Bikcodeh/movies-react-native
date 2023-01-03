@@ -66,23 +66,23 @@ const RenderItem = ({movie}: RenderItemProps) => {
 
 const styles = StyleSheet.create({
   card: {
-    elevation: 8,
-    shadowColor: '#000',
-    overflow: 'visible',
-    shadowOpacity: 0.6,
+    height: 170,
+    elevation: 5,
+    shadowColor: 'rgba(0, 0, 0, 0.9)',
+    shadowOpacity: 0.5,
     shadowOffset: {
       width: 0,
-      height: 6,
+      height: 4,
     },
     shadowRadius: 4,
-    borderRadius: 5,
-    padding: 1,
+    borderRadius: 10,
     marginHorizontal: 4,
   },
   image: {
     width: '100%',
-    height: 170,
-    borderRadius: 20,
+    height: '100%',
+    overflow: 'hidden',
+    borderRadius: 10,
   },
   cardTitle: {
     marginTop: 2,

@@ -66,7 +66,9 @@ const RenderItem = ({movie}: RenderItemProps) => {
       onPress={() => navigation.navigate('movie', {movie})}>
       <View>
         <View style={styles.card}>
-          <Image style={styles.image} source={{uri: imageUrl}} />
+          <View style={styles.imageContainer}>
+            <Image style={styles.image} source={{uri: imageUrl}} />
+          </View>
         </View>
         <Title style={styles.title}>{movie.title}</Title>
         <View style={styles.genres}>
@@ -87,19 +89,28 @@ const RenderItem = ({movie}: RenderItemProps) => {
 
 const styles = StyleSheet.create({
   card: {
-    shadowColor: '#000',
+    elevation: 12,
+    height: 450,
+    shadowColor: 'rgba(0, 0, 0, 0.9)',
+    shadowOpacity: 0.6,
     shadowOffset: {
       width: 0,
-      height: 10,
+      height: 4,
     },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 3,
+    shadowRadius: 6,
+    borderRadius: 20,
+    backgroundColor: 'white',
+  },
+  imageContainer: {
+    borderTopLeftRadius: 40,
+    borderBottomLeftRadius: 10,
   },
   image: {
     width: '100%',
-    height: 450,
+    height: '100%',
     borderRadius: 20,
+    overflow: 'hidden',
+    backgroundColor: 'white',
   },
   title: {
     marginHorizontal: 10,
