@@ -1,26 +1,22 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {View, ScrollView, StyleSheet} from 'react-native';
-import useNewMovies from '../hooks/useNewMovies';
+import axios, {AxiosError} from 'axios';
 import {ActivityIndicator, Text, Title} from 'react-native-paper';
+
+import useNewMovies from '../hooks/useNewMovies';
 import CarouselVertical from '../components/CarouselVertical';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../navigation/StackNavigation';
 import {Genre, Movie} from '../interfaces/movieinterfaces';
 import {getGenres, getMoviesByGenre} from '../api/moviesApi';
 import PreferencesContext from '../context/PreferencesContext';
-import axios, {AxiosError} from 'axios';
+import CarouselMulti from '../components/CarouselMulti';
 
 const ACTION_GENRE_ID: number = 28;
 
-interface Props extends NativeStackScreenProps<RootStackParamList> {}
-
-export default function Home(props: Props) {
-  const {navigation} = props;
+export default function Home() {
   const {isLoading, newMovies} = useNewMovies();
   const [genres, setGenres] = useState<Genre[]>([]);
   const [moviesByGenre, setMoviesByGenre] = useState<Movie[]>([]);
   const [genreSelected, setGenreSelected] = useState<number>(ACTION_GENRE_ID);
-  console.log(moviesByGenre);
   const onGenreSelected = (genreId: number) => {
     setGenreSelected(genreId);
   };
@@ -55,7 +51,7 @@ export default function Home(props: Props) {
       {newMovies && (
         <View style={styles.news}>
           <Title style={styles.newsTitle}>New Movies</Title>
-          <CarouselVertical movies={newMovies} navigation={navigation} />
+          <CarouselVertical movies={newMovies} />
         </View>
       )}
       <View style={styles.genres}>
@@ -82,6 +78,7 @@ export default function Home(props: Props) {
               </Text>
             ))}
         </ScrollView>
+        <CarouselMulti movies={moviesByGenre} />
       </View>
     </ScrollView>
   );
@@ -89,7 +86,7 @@ export default function Home(props: Props) {
 
 const styles = StyleSheet.create({
   news: {
-    marginVertical: 16,
+    marginTop: 16,
   },
   newsTitle: {
     marginBottom: 16,
@@ -102,7 +99,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   genres: {
-    marginTop: 10,
+    marginTop: 4,
     marginBottom: 50,
     marginStart: 16,
   },

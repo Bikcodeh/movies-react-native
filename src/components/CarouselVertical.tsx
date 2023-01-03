@@ -1,27 +1,27 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Dimensions,
   Image,
-  TouchableWithoutFeedback,
   View,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import axios, {AxiosError} from 'axios';
 import Carousel from 'react-native-snap-carousel';
-import {Movie} from '../interfaces/movieinterfaces';
 import {Text, Title} from 'react-native-paper';
+
+import {Movie} from '../interfaces/movieinterfaces';
 import {BASE_URL_IMG} from '../utils/constants';
 import {getGenresByMovie} from '../api/moviesApi';
-import axios, {AxiosError} from 'axios';
 import {RootStackParamList} from '../navigation/StackNavigation';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {useEffect} from 'react';
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
 const ITEM_WIDTH = Math.round(WINDOW_WIDTH * 0.7);
 
 interface Props {
   movies: Movie[];
-  navigation: NativeStackNavigationProp<RootStackParamList>;
 }
 
 export default function CarouselVertical(props: Props) {
@@ -32,17 +32,18 @@ export default function CarouselVertical(props: Props) {
       sliderWidth={WINDOW_WIDTH}
       itemWidth={ITEM_WIDTH}
       renderItem={item => {
-        return <RenderItem movie={item.item} navigation={props.navigation} />;
+        return <RenderItem movie={item.item} />;
       }}
     />
   );
 }
 interface RenderItemProps {
   movie: Movie;
-  navigation: NativeStackNavigationProp<RootStackParamList>;
 }
 
-const RenderItem = ({movie, navigation}: RenderItemProps) => {
+const RenderItem = ({movie}: RenderItemProps) => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [genres, setGenres] = useState<string[]>([] as string[]);
 
   useEffect(() => {
@@ -60,10 +61,13 @@ const RenderItem = ({movie, navigation}: RenderItemProps) => {
 
   const imageUrl = `${BASE_URL_IMG}/${movie.poster_path}`;
   return (
-    <TouchableWithoutFeedback
+    <TouchableOpacity
+      activeOpacity={0.9}
       onPress={() => navigation.navigate('movie', {movie})}>
-      <View style={styles.card}>
-        <Image style={styles.image} source={{uri: imageUrl}} />
+      <View>
+        <View style={styles.card}>
+          <Image style={styles.image} source={{uri: imageUrl}} />
+        </View>
         <Title style={styles.title}>{movie.title}</Title>
         <View style={styles.genres}>
           {genres &&
@@ -77,7 +81,7 @@ const RenderItem = ({movie, navigation}: RenderItemProps) => {
             })}
         </View>
       </View>
-    </TouchableWithoutFeedback>
+    </TouchableOpacity>
   );
 };
 
@@ -89,8 +93,9 @@ const styles = StyleSheet.create({
       height: 10,
     },
     shadowOpacity: 1,
-    shadowRadius: 10,
+    shadowRadius: 8,
     elevation: 3,
+    backgroundColor: 'red',
   },
   image: {
     width: '100%',
