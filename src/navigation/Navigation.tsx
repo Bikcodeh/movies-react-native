@@ -8,6 +8,7 @@ import {
 } from '@react-navigation/native';
 import {RootStackParamList} from './StackNavigation';
 import {IconButton} from 'react-native-paper';
+import {capitalize, isValidScreen} from '../utils/Util';
 
 const Drawer = createDrawerNavigator();
 
@@ -34,8 +35,14 @@ export default function Navigation(myprops: Props) {
       />
     );
   };
-  const backButton = () => {
-    return <IconButton icon="arrow-left" onPress={() => myprops.goBack()} />;
+  const backButton = (screen: string) => {
+    return (
+      <IconButton
+        icon="arrow-left"
+        onPress={() => myprops.goBack()}
+        iconColor={screen === 'movie' ? 'white' : undefined}
+      />
+    );
   };
   return (
     <Drawer.Navigator
@@ -48,12 +55,10 @@ export default function Navigation(myprops: Props) {
         options={{
           headerShown: true,
           headerLeft: () =>
-            routeName !== 'movie' && routeName !== 'search'
-              ? burgerMenu()
-              : backButton(),
-          headerRight: () =>
-            routeName !== 'search' && routeName !== 'movie' && searchButton(),
-          title: routeName.charAt(0).toUpperCase() + routeName.slice(1),
+            isValidScreen(routeName) ? burgerMenu() : backButton(routeName),
+          headerRight: () => isValidScreen(routeName) && searchButton(),
+          title: routeName !== 'movie' ? capitalize(routeName) : '',
+          headerTransparent: routeName !== 'movie' ? false : true,
         }}
       />
     </Drawer.Navigator>
