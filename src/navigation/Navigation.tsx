@@ -2,9 +2,12 @@ import React, {useEffect, useState} from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import StackNavigation from './StackNavigation';
 import DrawerContent from './DrawerContent';
-import {IconButton} from 'react-native-paper';
-import {NavigationContainerRefWithCurrent} from '@react-navigation/native';
+import {
+  DrawerActions,
+  NavigationContainerRefWithCurrent,
+} from '@react-navigation/native';
 import {RootStackParamList} from './StackNavigation';
+import {IconButton} from 'react-native-paper';
 
 const Drawer = createDrawerNavigator();
 
@@ -23,6 +26,17 @@ export default function Navigation(myprops: Props) {
       <IconButton icon="magnify" onPress={() => myprops.navigate('search')} />
     );
   };
+  const burgerMenu = () => {
+    return (
+      <IconButton
+        icon="menu"
+        onPress={() => myprops.dispatch(DrawerActions.openDrawer())}
+      />
+    );
+  };
+  const backButton = () => {
+    return <IconButton icon="arrow-left" onPress={() => myprops.goBack()} />;
+  };
   return (
     <Drawer.Navigator
       initialRouteName="Movies"
@@ -33,6 +47,10 @@ export default function Navigation(myprops: Props) {
         component={StackNavigation}
         options={{
           headerShown: true,
+          headerLeft: () =>
+            routeName !== 'movie' && routeName !== 'search'
+              ? burgerMenu()
+              : backButton(),
           headerRight: () =>
             routeName !== 'search' && routeName !== 'movie' && searchButton(),
           title: routeName.charAt(0).toUpperCase() + routeName.slice(1),
