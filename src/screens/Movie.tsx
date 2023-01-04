@@ -20,7 +20,6 @@ interface RenderPosterProps {
 }
 
 const RenderPoster = ({posterPath}: RenderPosterProps) => {
-  console.log(`${BASE_URL_IMG}${posterPath}`);
   return (
     <Image
       style={styles.posterPath}
