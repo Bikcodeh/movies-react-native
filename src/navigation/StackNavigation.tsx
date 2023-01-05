@@ -93,10 +93,8 @@ export default function StackNavigation(props: Props) {
         name="movie"
         component={Movie}
         options={{
-          title: 'Movie',
+          title: '',
           headerShown: false,
-          headerLeft: () => burgerMenu(),
-          headerShadowVisible: false,
         }}
       />
     </Stack.Navigator>
