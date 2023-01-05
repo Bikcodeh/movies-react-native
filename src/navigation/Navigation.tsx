@@ -10,7 +10,11 @@ import {RootStackParamList} from './StackNavigation';
 import {IconButton} from 'react-native-paper';
 import {capitalize, isValidScreen} from '../utils/Util';
 
-const Drawer = createDrawerNavigator();
+export type DrawerParamList = {
+  movies: undefined;
+};
+
+const Drawer = createDrawerNavigator<DrawerParamList>();
 
 interface Props extends NavigationContainerRefWithCurrent<RootStackParamList> {}
 
@@ -46,7 +50,7 @@ export default function Navigation(myprops: Props) {
   };
   return (
     <Drawer.Navigator
-      initialRouteName="Movies"
+      initialRouteName="movies"
       backBehavior="order"
       drawerContent={props => <DrawerContent {...props} />}>
       <Drawer.Screen
