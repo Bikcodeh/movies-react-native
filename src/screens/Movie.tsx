@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   },
   title: {
     marginHorizontal: 10,
-    marginTop: 10,
+    marginTop: 0,
   },
   genres: {
     flexDirection: 'row',
