@@ -4,7 +4,7 @@ import {RouteProp, useRoute} from '@react-navigation/native';
 import {RootStackParamList} from '../navigation/StackNavigation';
 import {BASE_URL_IMG} from '../utils/constants';
 import ModalVideo from '../components/ModalVideo';
-import {IconButton, Text, Title} from 'react-native-paper';
+import {IconButton} from 'react-native-paper';
 
 export default function Movie() {
   const movie = useRoute<RouteProp<RootStackParamList, 'movie'>>().params.movie;
@@ -19,7 +19,11 @@ export default function Movie() {
         <RenderPoster posterPath={`${movie.poster_path}`} />
         <MovieTrailer setShowVideo={setVisibilityModal} />
       </ScrollView>
-      <ModalVideo showModal={showModal} setShowModal={setVisibilityModal} />
+      <ModalVideo
+        showModal={showModal}
+        setShowModal={setVisibilityModal}
+        videoId={movie.id}
+      />
     </>
   );
 }

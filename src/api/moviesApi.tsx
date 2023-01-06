@@ -1,10 +1,12 @@
 import axios from 'axios';
 import {API_HOST, API_KEY, LANG} from '../utils/constants.js';
+import {VideoResponse} from '../interfaces/movieinterfaces';
 import {
   GenresResponse,
   Genre,
   Movie,
   MovieResponse,
+  Video,
 } from '../interfaces/movieinterfaces';
 
 export const moviesApi = axios.create({
@@ -41,6 +43,14 @@ export function getMoviesByGenre(genreId: number): Promise<Movie[]> {
   return moviesApi
     .get<MovieResponse>(
       `/discover/movie?api_key=${API_KEY}&language=${LANG}&with_genres=${genreId}`,
+    )
+    .then(response => response.data.results);
+}
+
+export function getVideosByMovieId(movieId: number): Promise<Video[]> {
+  return moviesApi
+    .get<VideoResponse>(
+      `/movie/${movieId}/videos?api_key=${API_KEY}&language=${LANG}`,
     )
     .then(response => response.data.results);
 }
