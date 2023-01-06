@@ -1,23 +1,53 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, ScrollView, StyleSheet, View} from 'react-native';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {RootStackParamList} from '../navigation/StackNavigation';
 import {BASE_URL_IMG} from '../utils/constants';
 import ModalVideo from '../components/ModalVideo';
-import {IconButton} from 'react-native-paper';
+import {IconButton, Title, Text} from 'react-native-paper';
+import {getMovieById} from '../api/moviesApi';
 
 export default function Movie() {
   const movie = useRoute<RouteProp<RootStackParamList, 'movie'>>().params.movie;
   const [showModal, setShowModal] = useState(false);
+  const [movieDetail, setMovieDetail] = useState(movie);
+  const {poster_path, title, genres} = movieDetail;
 
   const setVisibilityModal = () => {
     setShowModal(state => !state);
   };
+
+  const getMovie = async () => {
+    try {
+      const result = await getMovieById(movie.id);
+      setMovieDetail(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getMovie();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [movie.id]);
+
   return (
     <>
       <ScrollView>
-        <RenderPoster posterPath={`${movie.poster_path}`} />
+        <RenderPoster posterPath={`${poster_path}`} />
         <MovieTrailer setShowVideo={setVisibilityModal} />
+        <Title style={styles.title}>{title}</Title>
+        <View style={styles.genres}>
+          {genres &&
+            genres.map((genre, index) => {
+              return (
+                <Text key={genre.id} style={styles.genre}>
+                  {genre.name}
+                  {index !== genres.length - 1 && ', '}
+                </Text>
+              );
+            })}
+        </View>
       </ScrollView>
       <ModalVideo
         showModal={showModal}
@@ -75,5 +105,17 @@ const styles = StyleSheet.create({
   viewPlay: {
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
+  },
+  title: {
+    marginHorizontal: 10,
+    marginTop: 10,
+  },
+  genres: {
+    flexDirection: 'row',
+    marginHorizontal: 10,
+  },
+  genre: {
+    fontSize: 12,
+    color: '#8997a5',
   },
 });

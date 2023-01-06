@@ -54,3 +54,9 @@ export function getVideosByMovieId(movieId: number): Promise<Video[]> {
     )
     .then(response => response.data.results);
 }
+
+export function getMovieById(movieId: number): Promise<Movie> {
+  return moviesApi
+    .get<Movie>(`/movie/${movieId}?api_key=${API_KEY}&language=${LANG}`)
+    .then(response => response.data);
+}
