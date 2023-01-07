@@ -42,6 +42,10 @@ const App = () => {
             ? MoviesTheme.DarkThemePaper
             : MoviesTheme.DefaultThemePaper
         }>
+        <StatusBar
+          animated
+          barStyle={theme === 'dark' ? 'light-content' : undefined}
+        />
         <NavigationContainer
           ref={navRef}
           theme={
@@ -49,9 +53,6 @@ const App = () => {
               ? MoviesTheme.DarkThemeNavigation
               : MoviesTheme.DefaultThemeNavigation
           }>
-          <StatusBar
-            barStyle={theme === 'dark' ? 'dark-content' : 'light-content'}
-          />
           <Navigation {...navRef} />
         </NavigationContainer>
       </PaperProvider>
