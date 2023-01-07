@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, {AxiosRequestConfig} from 'axios';
 import {API_HOST, API_KEY, LANG} from '../utils/constants.js';
 import {VideoResponse} from '../interfaces/movieinterfaces';
 import {
@@ -12,6 +12,16 @@ import {
 export const moviesApi = axios.create({
   baseURL: API_HOST,
 });
+
+moviesApi.interceptors.request.use(
+  function (res: AxiosRequestConfig<any>) {
+    res.params = {...res.params, api_key: API_KEY, language: LANG};
+    return res;
+  },
+  function (error: any) {
+    return Promise.reject(error);
+  },
+);
 
 export function getGenresByMovie(genresId: Number[]): Promise<string[]> {
   return moviesApi
@@ -33,30 +43,24 @@ export function getGenresByMovie(genresId: Number[]): Promise<string[]> {
 
 export function getGenres(): Promise<Genre[]> {
   return moviesApi
-    .get<GenresResponse>(
-      `/genre/movie/list?api_key=${API_KEY}&language=${LANG}`,
-    )
+    .get<GenresResponse>('/genre/movie/list')
     .then(response => response.data.genres);
 }
 
 export function getMoviesByGenre(genreId: number): Promise<Movie[]> {
   return moviesApi
-    .get<MovieResponse>(
-      `/discover/movie?api_key=${API_KEY}&language=${LANG}&with_genres=${genreId}`,
-    )
+    .get<MovieResponse>(`/discover/movie?&with_genres=${genreId}`)
     .then(response => response.data.results);
 }
 
 export function getVideosByMovieId(movieId: number): Promise<Video[]> {
   return moviesApi
-    .get<VideoResponse>(
-      `/movie/${movieId}/videos?api_key=${API_KEY}&language=${LANG}`,
-    )
+    .get<VideoResponse>(`/movie/${movieId}/videos`)
     .then(response => response.data.results);
 }
 
 export function getMovieById(movieId: number): Promise<Movie> {
   return moviesApi
-    .get<Movie>(`/movie/${movieId}?api_key=${API_KEY}&language=${LANG}`)
+    .get<Movie>(`/movie/${movieId}`)
     .then(response => response.data);
 }
