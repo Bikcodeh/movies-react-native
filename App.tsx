@@ -10,6 +10,7 @@ import {StatusBar} from 'react-native';
 import MoviesTheme from './src/theme/Theme';
 import {RootStackParamList} from './src/navigation/StackNavigation';
 import PreferencesContext from './src/context/PreferencesContext';
+import './src/utils/extension/StringExt';
 
 const App = () => {
   const [theme, setTheme] = useState('light');

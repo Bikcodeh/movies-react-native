@@ -7,7 +7,6 @@ import {IconButton, Title, Text} from 'react-native-paper';
 import {Rating} from 'react-native-ratings';
 import starDark from '../assets/png/starDark.png';
 import starLight from '../assets/png/starLight.png';
-import {BASE_URL_IMG} from '../utils/constants';
 import {getMovieById} from '../api/moviesApi';
 import usePreferences from '../hooks/usePreferences';
 
@@ -81,7 +80,7 @@ const RenderPoster = ({posterPath}: RenderPosterProps) => {
   return (
     <Image
       style={styles.posterPath}
-      source={{uri: `${BASE_URL_IMG}${posterPath}`}}
+      source={{uri: posterPath.applyImageUrl()}}
     />
   );
 };
