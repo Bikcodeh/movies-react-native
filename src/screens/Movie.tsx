@@ -7,7 +7,6 @@ import {IconButton, Title, Text} from 'react-native-paper';
 import {Rating} from 'react-native-ratings';
 import starDark from '../assets/png/starDark.png';
 import starLight from '../assets/png/starLight.png';
-import {BASE_URL_IMG} from '../utils/constants';
 import {getMovieById} from '../api/moviesApi';
 import usePreferences from '../hooks/usePreferences';
 
@@ -56,6 +55,13 @@ export default function Movie() {
           voteAverage={movieDetail.vote_average}
           voteCount={movieDetail.vote_count}
         />
+        <View style={{flexDirection: 'column', marginHorizontal: 10}}>
+          <Title style={{fontSize: 16}}>Overview</Title>
+          <Text>{movie.overview}</Text>
+        </View>
+        <Text style={{marginHorizontal: 10, marginVertical: 10}}>
+          Release date: {movie.release_date}
+        </Text>
       </ScrollView>
       <ModalVideo
         showModal={showModal}
@@ -74,7 +80,7 @@ const RenderPoster = ({posterPath}: RenderPosterProps) => {
   return (
     <Image
       style={styles.posterPath}
-      source={{uri: `${BASE_URL_IMG}${posterPath}`}}
+      source={{uri: posterPath.applyImageUrl()}}
     />
   );
 };
@@ -117,7 +123,7 @@ const MovieRating = ({voteAverage, voteCount}: MovieRatingProps) => {
           ratingImage={theme === 'dark' ? starDark : starLight}
           style={{marginRight: 8}}
         />
-        <Text>{Math.round(media)}</Text>
+        <Text>{Math.round(media * 10) / 10}</Text>
       </View>
       <Title style={{fontSize: 12}}>{voteCount} votes</Title>
     </View>
@@ -157,5 +163,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  overview: {
+    marginHorizontal: 10,
   },
 });

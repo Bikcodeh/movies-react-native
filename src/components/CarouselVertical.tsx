@@ -13,7 +13,6 @@ import Carousel from 'react-native-snap-carousel';
 import {Text, Title} from 'react-native-paper';
 
 import {Movie} from '../interfaces/movieinterfaces';
-import {BASE_URL_IMG} from '../utils/constants';
 import {getGenresByMovie} from '../api/moviesApi';
 import {RootStackParamList} from '../navigation/StackNavigation';
 
@@ -58,8 +57,6 @@ const RenderItem = ({movie}: RenderItemProps) => {
         }
       });
   }, [movie]);
-
-  const imageUrl = `${BASE_URL_IMG}/${movie.poster_path}`;
   return (
     <TouchableOpacity
       activeOpacity={0.9}
@@ -67,7 +64,10 @@ const RenderItem = ({movie}: RenderItemProps) => {
       <View>
         <View style={styles.card}>
           <View style={styles.imageContainer}>
-            <Image style={styles.image} source={{uri: imageUrl}} />
+            <Image
+              style={styles.image}
+              source={{uri: movie.poster_path.applyImageUrl()}}
+            />
           </View>
         </View>
         <Title style={styles.title}>{movie.title}</Title>

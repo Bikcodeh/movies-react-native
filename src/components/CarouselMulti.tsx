@@ -12,7 +12,6 @@ import {
 import {Title} from 'react-native-paper';
 import {Movie} from '../interfaces/movieinterfaces';
 import {RootStackParamList} from '../navigation/StackNavigation';
-import {BASE_URL_IMG} from '../utils/constants';
 
 const {width} = Dimensions.get('window');
 const ITEM_WIDTH = Math.round(width * 0.3);
@@ -44,7 +43,6 @@ interface RenderItemProps {
 const RenderItem = ({movie}: RenderItemProps) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const imageUrl = `${BASE_URL_IMG}/${movie.poster_path}`;
 
   return (
     <TouchableOpacity
@@ -52,7 +50,10 @@ const RenderItem = ({movie}: RenderItemProps) => {
       onPress={() => navigation.navigate('movie', {movie})}>
       <View>
         <View style={styles.card}>
-          <Image style={styles.image} source={{uri: imageUrl}} />
+          <Image
+            style={styles.image}
+            source={{uri: movie.poster_path.applyImageUrl()}}
+          />
         </View>
         <View>
           <Title style={styles.cardTitle} numberOfLines={1}>
