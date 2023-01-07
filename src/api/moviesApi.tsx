@@ -64,3 +64,9 @@ export function getMovieById(movieId: number): Promise<Movie> {
     .get<Movie>(`/movie/${movieId}`)
     .then(response => response.data);
 }
+
+export function getPopularMovies(page: number = 1): Promise<MovieResponse> {
+  return moviesApi
+    .get<MovieResponse>(`/movie/popular?page=${page}`)
+    .then(response => response.data);
+}
