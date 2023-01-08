@@ -1,22 +1,37 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {Image, ScrollView, StyleSheet, View} from 'react-native';
 import axios, {AxiosError} from 'axios';
-import {ActivityIndicator, Title, Text} from 'react-native-paper';
+import {ActivityIndicator, Title, Text, Button} from 'react-native-paper';
 import {getPopularMovies} from '../api/moviesApi';
 import {Movie} from '../interfaces/movieinterfaces';
 import noImage from '../assets/png/default_image.png';
 import MovieRating from '../components/RatingMovie';
+import usePreferences from '../hooks/usePreferences';
 
 export default function Popular() {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[] | null>(null);
   const [isLoadingMovies, setIsLoadingMovies] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const totalPages = useRef(0);
+  const {theme} = usePreferences();
 
-  const getPopular = async (page: number) => {
+  const getPopular = async () => {
     try {
       const response = await getPopularMovies(page);
-      setMovies(response.results);
+      if (page <= response.total_pages) {
+        if (!movies) {
+          setMovies(response.results);
+        } else {
+          setMovies([...movies, ...response.results]);
+        }
+      }
+      totalPages.current = response.total_pages;
       setIsLoadingMovies(false);
+      setIsLoadingMore(false);
     } catch (err) {
+      setIsLoadingMore(false);
+      setIsLoadingMovies(false);
       const error = err as Error | AxiosError;
       if (!axios.isAxiosError(error)) {
         console.log(error);
@@ -27,9 +42,9 @@ export default function Popular() {
   };
 
   useEffect(() => {
-    getPopular(1);
+    getPopular();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [page]);
 
   return (
     <ScrollView>
@@ -40,11 +55,25 @@ export default function Popular() {
         />
       ) : (
         <View>
-          {movies.map(movie => (
+          {movies?.map(movie => (
             <MovieItem movie={movie} key={movie.id} />
           ))}
         </View>
       )}
+      {isLoadingMore ? (
+        <ActivityIndicator size={40} />
+      ) : page <= totalPages.current ? (
+        <Button
+          mode="contained-tonal"
+          style={styles.loadMore}
+          onPress={() => {
+            setPage(page + 1);
+            setIsLoadingMore(true);
+          }}
+          labelStyle={{color: theme === 'dark' ? '#fff' : '#000'}}>
+          <Text>Load more</Text>
+        </Button>
+      ) : null}
     </ScrollView>
   );
 }
@@ -97,5 +126,9 @@ const styles = StyleSheet.create({
   image: {
     width: 100,
     height: 150,
+  },
+  loadMore: {
+    marginBottom: 30,
+    borderRadius: 0,
   },
 });
