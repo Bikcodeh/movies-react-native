@@ -1,5 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {FlatList, Image, StyleSheet, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import axios, {AxiosError} from 'axios';
 import {ActivityIndicator, Title, Text, Button} from 'react-native-paper';
 import {getPopularMovies} from '../api/moviesApi';
@@ -7,6 +13,9 @@ import {Movie} from '../interfaces/movieinterfaces';
 import noImage from '../assets/png/default_image.png';
 import MovieRating from '../components/RatingMovie';
 import usePreferences from '../hooks/usePreferences';
+import {RootStackParamList} from '../navigation/StackNavigation';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useNavigation} from '@react-navigation/native';
 
 export default function Popular() {
   const [movies, setMovies] = useState<Movie[] | null>(null);
@@ -15,6 +24,8 @@ export default function Popular() {
   const [showLoadMore, setShowLoadMore] = useState(false);
   const [page, setPage] = useState(1);
   const {theme} = usePreferences();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList, 'popular'>>();
 
   const getPopular = async () => {
     try {
@@ -58,7 +69,14 @@ export default function Popular() {
       ) : (
         <FlatList
           data={movies}
-          renderItem={item => <MovieItem movie={item.item} />}
+          renderItem={item => (
+            <MovieItem
+              movie={item.item}
+              onClickMovie={movieItem =>
+                navigation.navigate('movie', {movie: movieItem})
+              }
+            />
+          )}
           initialNumToRender={10}
           keyExtractor={item => item.id.toString()}
           showsVerticalScrollIndicator={false}
@@ -113,11 +131,15 @@ const RenderFooter = ({
 
 interface MovieProps {
   movie: Movie;
+  onClickMovie: (movie: Movie) => void;
 }
 
-const MovieItem = ({movie}: MovieProps) => {
+const MovieItem = ({movie, onClickMovie}: MovieProps) => {
   return (
-    <View style={styles.movie}>
+    <TouchableOpacity
+      style={styles.movie}
+      activeOpacity={0.8}
+      onPress={() => onClickMovie(movie)}>
       <View style={styles.left}>
         <Image
           style={styles.image}
@@ -139,7 +161,7 @@ const MovieItem = ({movie}: MovieProps) => {
           customStyles={[]}
         />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
