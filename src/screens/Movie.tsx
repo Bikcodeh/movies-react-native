@@ -4,11 +4,8 @@ import {RouteProp, useRoute} from '@react-navigation/native';
 import {RootStackParamList} from '../navigation/StackNavigation';
 import ModalVideo from '../components/ModalVideo';
 import {IconButton, Title, Text} from 'react-native-paper';
-import {Rating} from 'react-native-ratings';
-import starDark from '../assets/png/starDark.png';
-import starLight from '../assets/png/starLight.png';
 import {getMovieById} from '../api/moviesApi';
-import usePreferences from '../hooks/usePreferences';
+import MovieRating from '../components/RatingMovie';
 
 export default function Movie() {
   const movie = useRoute<RouteProp<RootStackParamList, 'movie'>>().params.movie;
@@ -54,6 +51,7 @@ export default function Movie() {
         <MovieRating
           voteAverage={movieDetail.vote_average}
           voteCount={movieDetail.vote_count}
+          customStyles={{marginHorizontal: 10}}
         />
         <View style={{flexDirection: 'column', marginHorizontal: 10}}>
           <Title style={{fontSize: 16}}>Overview</Title>
@@ -103,33 +101,6 @@ const MovieTrailer = ({setShowVideo}: MovieTrailerProps) => {
   );
 };
 
-interface MovieRatingProps {
-  voteCount: number;
-  voteAverage: number;
-}
-
-const MovieRating = ({voteAverage, voteCount}: MovieRatingProps) => {
-  const {theme} = usePreferences();
-  const media = voteAverage / 2;
-  return (
-    <View style={{marginHorizontal: 10}}>
-      <View style={styles.voteContainer}>
-        <Rating
-          type="custom"
-          ratingColor="#ffc205"
-          ratingBackgroundColor={theme === 'dark' ? '#192734' : '#f0f0f0'}
-          startingValue={media}
-          imageSize={20}
-          ratingImage={theme === 'dark' ? starDark : starLight}
-          style={{marginRight: 8}}
-        />
-        <Text>{Math.round(media * 10) / 10}</Text>
-      </View>
-      <Title style={{fontSize: 12}}>{voteCount} votes</Title>
-    </View>
-  );
-};
-
 const styles = StyleSheet.create({
   posterPath: {
     width: '100%',
@@ -158,11 +129,6 @@ const styles = StyleSheet.create({
   genre: {
     fontSize: 12,
     color: '#8997a5',
-  },
-  voteContainer: {
-    marginTop: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   overview: {
     marginHorizontal: 10,
