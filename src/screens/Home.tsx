@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {View, ScrollView, StyleSheet} from 'react-native';
+import {View, ScrollView, StyleSheet, FlatList} from 'react-native';
 import axios, {AxiosError} from 'axios';
 import {ActivityIndicator, Text, Title} from 'react-native-paper';
 
@@ -56,33 +56,63 @@ export default function Home() {
       )}
       <View style={styles.genres}>
         <Title style={styles.genresTitle}>Genre</Title>
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {genres &&
-            genres.map(genre => (
-              <Text
-                style={[
-                  styles.genre,
-                  // eslint-disable-next-line react-native/no-inline-styles
-                  {
-                    color:
-                      genre.id !== genreSelected
-                        ? '#8697a5'
-                        : theme === 'dark'
-                        ? '#fff'
-                        : 'black',
-                  },
-                ]}
-                key={genre.id}
-                onPress={() => onGenreSelected(genre.id)}>
-                {genre.name}
-              </Text>
-            ))}
-        </ScrollView>
+        <FlatList
+          initialNumToRender={6}
+          maxToRenderPerBatch={10}
+          horizontal
+          nestedScrollEnabled
+          data={genres}
+          renderItem={item => (
+            <GenreTextItem
+              id={item.item.id}
+              genreSelectedId={genreSelected}
+              theme={theme}
+              onGenreSelected={onGenreSelected}
+              name={item.item.name}
+            />
+          )}
+        />
         <CarouselMulti movies={moviesByGenre} />
       </View>
     </ScrollView>
   );
 }
+
+interface GenreTextItemProps {
+  id: number;
+  genreSelectedId: number;
+  name: string;
+  theme: string;
+  onGenreSelected: (genreId: number) => void;
+}
+
+const GenreTextItem = ({
+  id,
+  genreSelectedId,
+  name,
+  theme,
+  onGenreSelected,
+}: GenreTextItemProps) => {
+  return (
+    <Text
+      style={[
+        styles.genre,
+        // eslint-disable-next-line react-native/no-inline-styles
+        {
+          color:
+            id !== genreSelectedId
+              ? '#8697a5'
+              : theme === 'dark'
+              ? '#fff'
+              : 'black',
+        },
+      ]}
+      key={id}
+      onPress={() => onGenreSelected(id)}>
+      {name}
+    </Text>
+  );
+};
 
 const styles = StyleSheet.create({
   news: {
