@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {Image, ScrollView, StyleSheet, View} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {FlatList, Image, StyleSheet, View} from 'react-native';
 import axios, {AxiosError} from 'axios';
 import {ActivityIndicator, Title, Text, Button} from 'react-native-paper';
 import {getPopularMovies} from '../api/moviesApi';
@@ -12,21 +12,23 @@ export default function Popular() {
   const [movies, setMovies] = useState<Movie[] | null>(null);
   const [isLoadingMovies, setIsLoadingMovies] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [showLoadMore, setShowLoadMore] = useState(false);
   const [page, setPage] = useState(1);
-  const totalPages = useRef(0);
   const {theme} = usePreferences();
 
   const getPopular = async () => {
     try {
       const response = await getPopularMovies(page);
       if (page <= response.total_pages) {
+        setShowLoadMore(true);
         if (!movies) {
           setMovies(response.results);
         } else {
           setMovies([...movies, ...response.results]);
         }
+      } else {
+        setShowLoadMore(false);
       }
-      totalPages.current = response.total_pages;
       setIsLoadingMovies(false);
       setIsLoadingMore(false);
     } catch (err) {
@@ -47,36 +49,67 @@ export default function Popular() {
   }, [page]);
 
   return (
-    <ScrollView>
+    <View>
       {isLoadingMovies ? (
         <ActivityIndicator
           size={30}
           style={{alignContent: 'center', alignItems: 'center'}}
         />
       ) : (
-        <View>
-          {movies?.map(movie => (
-            <MovieItem movie={movie} key={movie.id} />
-          ))}
-        </View>
+        <FlatList
+          data={movies}
+          renderItem={item => <MovieItem movie={item.item} />}
+          initialNumToRender={10}
+          keyExtractor={item => item.id.toString()}
+          showsVerticalScrollIndicator={false}
+          ListFooterComponent={
+            <RenderFooter
+              theme={theme}
+              isLoadingMore={isLoadingMore}
+              showLoadMore={showLoadMore}
+              onLoadMore={() => {
+                setIsLoadingMore(true);
+                setPage(page + 1);
+              }}
+            />
+          }
+        />
       )}
-      {isLoadingMore ? (
-        <ActivityIndicator size={40} />
-      ) : page <= totalPages.current ? (
-        <Button
-          mode="contained-tonal"
-          style={styles.loadMore}
-          onPress={() => {
-            setPage(page + 1);
-            setIsLoadingMore(true);
-          }}
-          labelStyle={{color: theme === 'dark' ? '#fff' : '#000'}}>
-          <Text>Load more</Text>
-        </Button>
-      ) : null}
-    </ScrollView>
+    </View>
   );
 }
+
+interface RenderFooterProps {
+  onLoadMore: () => void;
+  theme: string;
+  isLoadingMore: boolean;
+  showLoadMore: boolean;
+}
+
+const RenderFooter = ({
+  onLoadMore,
+  theme,
+  isLoadingMore,
+  showLoadMore,
+}: RenderFooterProps) => {
+  if (isLoadingMore) {
+    return (
+      <ActivityIndicator style={{display: isLoadingMore ? 'flex' : 'none'}} />
+    );
+  } else {
+    return (
+      <Button
+        mode="contained-tonal"
+        style={[styles.loadMore, {display: showLoadMore ? 'flex' : 'none'}]}
+        onPress={() => {
+          onLoadMore();
+        }}
+        labelStyle={{color: theme === 'dark' ? '#fff' : '#000'}}>
+        <Text>Load more</Text>
+      </Button>
+    );
+  }
+};
 
 interface MovieProps {
   movie: Movie;
@@ -96,7 +129,7 @@ const MovieItem = ({movie}: MovieProps) => {
         />
       </View>
       <View style={styles.right}>
-        <View style={{}}>
+        <View>
           <Title numberOfLines={2}>{movie.title}</Title>
         </View>
         <Text>{movie.release_date}</Text>
