@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
   FlatList,
   Image,
@@ -6,9 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import axios, {AxiosError} from 'axios';
 import {ActivityIndicator, Title, Text, Button} from 'react-native-paper';
-import {getPopularMovies} from '../api/moviesApi';
 import {Movie} from '../interfaces/movieinterfaces';
 import noImage from '../assets/png/default_image.png';
 import MovieRating from '../components/RatingMovie';
@@ -16,83 +14,41 @@ import usePreferences from '../hooks/usePreferences';
 import {RootStackParamList} from '../navigation/StackNavigation';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useNavigation} from '@react-navigation/native';
+import useGetMovies from '../hooks/useGetMovies';
 
 export default function Popular() {
-  const [movies, setMovies] = useState<Movie[] | null>(null);
-  const [isLoadingMovies, setIsLoadingMovies] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [showLoadMore, setShowLoadMore] = useState(false);
-  const [page, setPage] = useState(1);
   const {theme} = usePreferences();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList, 'popular'>>();
-
-  const getPopular = async () => {
-    try {
-      const response = await getPopularMovies(page);
-      if (page <= response.total_pages) {
-        setShowLoadMore(true);
-        if (!movies) {
-          setMovies(response.results);
-        } else {
-          setMovies([...movies, ...response.results]);
-        }
-      } else {
-        setShowLoadMore(false);
-      }
-      setIsLoadingMovies(false);
-      setIsLoadingMore(false);
-    } catch (err) {
-      setIsLoadingMore(false);
-      setIsLoadingMovies(false);
-      const error = err as Error | AxiosError;
-      if (!axios.isAxiosError(error)) {
-        console.log(error);
-      } else {
-        console.log(error);
-      }
-    }
-  };
-
-  useEffect(() => {
-    getPopular();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  const {canLoadMore, movies, isLoadingMovies, nextPage} =
+    useGetMovies('popular');
 
   return (
     <View>
-      {isLoadingMovies ? (
-        <ActivityIndicator
-          size={30}
-          style={{alignContent: 'center', alignItems: 'center'}}
-        />
-      ) : (
-        <FlatList
-          data={movies}
-          renderItem={item => (
-            <MovieItem
-              movie={item.item}
-              onClickMovie={movieItem =>
-                navigation.navigate('movie', {movie: movieItem})
-              }
-            />
-          )}
-          initialNumToRender={10}
-          keyExtractor={item => item.id.toString()}
-          showsVerticalScrollIndicator={false}
-          ListFooterComponent={
-            <RenderFooter
-              theme={theme}
-              isLoadingMore={isLoadingMore}
-              showLoadMore={showLoadMore}
-              onLoadMore={() => {
-                setIsLoadingMore(true);
-                setPage(page + 1);
-              }}
-            />
-          }
-        />
-      )}
+      <FlatList
+        data={movies}
+        renderItem={({item}) => (
+          <MovieItem
+            key={item.id}
+            movie={item}
+            onClickMovie={movieItem =>
+              navigation.navigate('movie', {movie: movieItem})
+            }
+          />
+        )}
+        removeClippedSubviews
+        initialNumToRender={6}
+        keyExtractor={item => item.id.toString()}
+        showsVerticalScrollIndicator={false}
+        ListFooterComponent={
+          <RenderFooter
+            theme={theme}
+            isLoadingMore={isLoadingMovies}
+            showLoadMore={canLoadMore}
+            onLoadMore={() => nextPage()}
+          />
+        }
+      />
     </View>
   );
 }

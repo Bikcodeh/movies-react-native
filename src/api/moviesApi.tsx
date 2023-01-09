@@ -1,11 +1,11 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import {API_HOST, API_KEY, LANG} from '../utils/constants.js';
-import {VideoResponse} from '../interfaces/movieinterfaces';
 import {
   GenresResponse,
   Genre,
   Movie,
   MovieResponse,
+  VideoResponse,
   Video,
 } from '../interfaces/movieinterfaces';
 
@@ -68,5 +68,11 @@ export function getMovieById(movieId: number): Promise<Movie> {
 export function getPopularMovies(page: number = 1): Promise<MovieResponse> {
   return moviesApi
     .get<MovieResponse>(`/movie/popular?page=${page}`)
+    .then(response => response.data);
+}
+
+export function getNewMovies(page: number = 1): Promise<MovieResponse> {
+  return moviesApi
+    .get<MovieResponse>(`/movie/latest?page=${page}`)
     .then(response => response.data);
 }
