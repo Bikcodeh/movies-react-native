@@ -23,6 +23,7 @@ export default function MovieRating({
     <View style={[customStyles]}>
       <View style={styles.voteContainer}>
         <Rating
+          readonly
           type="custom"
           ratingColor="#ffc205"
           ratingBackgroundColor={theme === 'dark' ? '#192734' : '#f0f0f0'}
