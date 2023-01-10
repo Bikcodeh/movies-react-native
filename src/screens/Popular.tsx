@@ -6,18 +6,17 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {ActivityIndicator, Title, Text, Button} from 'react-native-paper';
+import {ActivityIndicator, Title, Text} from 'react-native-paper';
 import {Movie} from '../interfaces/movieinterfaces';
 import noImage from '../assets/png/default_image.png';
 import MovieRating from '../components/RatingMovie';
-import usePreferences from '../hooks/usePreferences';
 import {RootStackParamList} from '../navigation/StackNavigation';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useNavigation} from '@react-navigation/native';
 import useGetMovies from '../hooks/useGetMovies';
+import RenderFooter from '../components/FooterLoadMore';
 
 export default function Popular() {
-  const {theme} = usePreferences();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList, 'popular'>>();
   const {canLoadMore, movies, isLoadingMovies, nextPage} =
@@ -45,7 +44,6 @@ export default function Popular() {
           showsVerticalScrollIndicator={false}
           ListFooterComponent={
             <RenderFooter
-              theme={theme}
               isLoadingMore={isLoadingMovies}
               showLoadMore={canLoadMore}
               onLoadMore={() => nextPage()}
@@ -56,38 +54,6 @@ export default function Popular() {
     </View>
   );
 }
-
-interface RenderFooterProps {
-  onLoadMore: () => void;
-  theme: string;
-  isLoadingMore: boolean;
-  showLoadMore: boolean;
-}
-
-const RenderFooter = ({
-  onLoadMore,
-  theme,
-  isLoadingMore,
-  showLoadMore,
-}: RenderFooterProps) => {
-  if (isLoadingMore) {
-    return (
-      <ActivityIndicator style={{display: isLoadingMore ? 'flex' : 'none'}} />
-    );
-  } else {
-    return (
-      <Button
-        mode="contained-tonal"
-        style={[styles.loadMore, {display: showLoadMore ? 'flex' : 'none'}]}
-        onPress={() => {
-          onLoadMore();
-        }}
-        labelStyle={{color: theme === 'dark' ? '#fff' : '#000'}}>
-        <Text>Load more</Text>
-      </Button>
-    );
-  }
-};
 
 interface MovieProps {
   movie: Movie;
@@ -141,10 +107,6 @@ const styles = StyleSheet.create({
   image: {
     width: 100,
     height: 150,
-  },
-  loadMore: {
-    marginBottom: 30,
-    borderRadius: 0,
   },
   loadingMain: {
     justifyContent: 'center',
