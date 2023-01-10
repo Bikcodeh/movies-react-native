@@ -25,30 +25,34 @@ export default function Popular() {
 
   return (
     <View>
-      <FlatList
-        data={movies}
-        renderItem={({item}) => (
-          <MovieItem
-            key={item.id}
-            movie={item}
-            onClickMovie={movieItem =>
-              navigation.navigate('movie', {movie: movieItem})
-            }
-          />
-        )}
-        removeClippedSubviews
-        initialNumToRender={6}
-        keyExtractor={item => item.id.toString()}
-        showsVerticalScrollIndicator={false}
-        ListFooterComponent={
-          <RenderFooter
-            theme={theme}
-            isLoadingMore={isLoadingMovies}
-            showLoadMore={canLoadMore}
-            onLoadMore={() => nextPage()}
-          />
-        }
-      />
+      {isLoadingMovies && movies.length === 0 ? (
+        <ActivityIndicator style={styles.loadingMain} size={40} />
+      ) : (
+        <FlatList
+          data={movies}
+          renderItem={({item}) => (
+            <MovieItem
+              key={item.id}
+              movie={item}
+              onClickMovie={movieItem =>
+                navigation.navigate('movie', {movie: movieItem})
+              }
+            />
+          )}
+          removeClippedSubviews
+          initialNumToRender={6}
+          keyExtractor={item => item.id.toString()}
+          showsVerticalScrollIndicator={false}
+          ListFooterComponent={
+            <RenderFooter
+              theme={theme}
+              isLoadingMore={isLoadingMovies}
+              showLoadMore={canLoadMore}
+              onLoadMore={() => nextPage()}
+            />
+          }
+        />
+      )}
     </View>
   );
 }
@@ -141,5 +145,9 @@ const styles = StyleSheet.create({
   loadMore: {
     marginBottom: 30,
     borderRadius: 0,
+  },
+  loadingMain: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
