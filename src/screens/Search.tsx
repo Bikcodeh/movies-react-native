@@ -9,6 +9,7 @@ import {IconButton, Searchbar} from 'react-native-paper';
 import MovieItem from '../components/MovieItem';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/StackNavigation';
+import usePreferences from '../hooks/usePreferences';
 
 export default function Search() {
   const navigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
@@ -16,6 +17,7 @@ export default function Search() {
     useNavigation<NativeStackNavigationProp<RootStackParamList, 'search'>>();
   const [movies, setMovies] = useState<Movie[]>([]);
   const [text, setText] = useState('');
+  const {theme} = usePreferences();
 
   useEffect(() => {
     navigation.getParent()?.setOptions({
@@ -48,8 +50,12 @@ export default function Search() {
             value={text}
             placeholder="Search your movie"
             placeholderTextColor="#8997a5"
-            inputStyle={styles.input}
+            inputStyle={[
+              styles.input,
+              {color: theme === 'dark' ? '#292d31' : undefined},
+            ]}
             elevation={0}
+            iconColor="#8997a5"
             onChangeText={value => setText(value)}
             style={styles.search}
             onSubmitEditing={_ => searchMoviesByQuery()}
