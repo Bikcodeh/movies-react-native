@@ -76,3 +76,9 @@ export function getNewMovies(page: number = 1): Promise<MovieResponse> {
     .get<MovieResponse>(`/movie/latest?page=${page}`)
     .then(response => response.data);
 }
+
+export function searchMovies(query: string): Promise<MovieResponse> {
+  return moviesApi
+    .get<MovieResponse>(`/search/movie?query=${query}`)
+    .then(response => response.data);
+}
