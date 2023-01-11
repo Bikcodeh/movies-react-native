@@ -1,14 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView, StyleSheet, View} from 'react-native';
+import {SafeAreaView, StyleSheet, View, FlatList} from 'react-native';
 import {Movie} from '../interfaces/movieinterfaces';
 import {searchMovies} from '../api/moviesApi';
 import {useNavigation} from '@react-navigation/native';
 import {DrawerNavigationProp} from '@react-navigation/drawer';
 import {DrawerParamList} from '../navigation/Navigation';
-import {IconButton, Searchbar, TextInput} from 'react-native-paper';
+import {IconButton, Searchbar} from 'react-native-paper';
+import MovieItem from '../components/MovieItem';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../navigation/StackNavigation';
 
 export default function Search() {
   const navigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
+  const navigationStack =
+    useNavigation<NativeStackNavigationProp<RootStackParamList, 'search'>>();
   const [movies, setMovies] = useState<Movie[]>([]);
   const [text, setText] = useState('');
 
@@ -27,17 +32,13 @@ export default function Search() {
 
   const searchMoviesByQuery = async () => {
     try {
-      const response = await searchMovies('batman');
+      const response = await searchMovies(text);
       setMovies(response.results);
     } catch (error) {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    searchMoviesByQuery();
-  }, []);
-
+  //console.log(movies);
   return (
     <SafeAreaView>
       <View style={styles.container}>
@@ -51,9 +52,27 @@ export default function Search() {
             elevation={0}
             onChangeText={value => setText(value)}
             style={styles.search}
+            onSubmitEditing={_ => searchMoviesByQuery()}
+            returnKeyType="search"
+            keyboardType="default"
           />
         </View>
       </View>
+      <FlatList
+        data={movies}
+        renderItem={({item}) => (
+          <MovieItem
+            movie={item}
+            onClickMovie={movie => navigationStack.navigate('movie', {movie})}
+          />
+        )}
+        maxToRenderPerBatch={15}
+        initialNumToRender={15}
+        numColumns={3}
+        showsVerticalScrollIndicator={false}
+        keyExtractor={item => item.id.toString()}
+        style={{marginBottom: 16}}
+      />
     </SafeAreaView>
   );
 }

@@ -1,20 +1,11 @@
 import React from 'react';
-import {
-  FlatList,
-  Image,
-  View,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-} from 'react-native';
+import {FlatList, View} from 'react-native';
 import useGetMovies from '../hooks/useGetMovies';
-import {Movie} from '../interfaces/movieinterfaces';
 import {RootStackParamList} from '../navigation/StackNavigation';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useNavigation} from '@react-navigation/native';
 import RenderFooter from '../components/FooterLoadMore';
-
-const {width} = Dimensions.get('window');
+import MovieItem from '../components/MovieItem';
 
 export default function News() {
   const navigation =
@@ -47,26 +38,3 @@ export default function News() {
     </View>
   );
 }
-
-interface MovieItemProps {
-  movie: Movie;
-  onClickMovie: (movie: Movie) => void;
-}
-
-const MovieItem = ({movie, onClickMovie}: MovieItemProps) => {
-  return (
-    <TouchableOpacity activeOpacity={0.8} onPress={() => onClickMovie(movie)}>
-      <Image
-        style={styles.movieItem}
-        source={{uri: movie.poster_path.applyImageUrl()}}
-      />
-    </TouchableOpacity>
-  );
-};
-
-const styles = StyleSheet.create({
-  movieItem: {
-    width: width / 3,
-    height: 200,
-  },
-});
