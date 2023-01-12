@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
   NavigationContainer,
   useNavigationContainerRef,
@@ -7,12 +7,16 @@ import {Provider as PaperProvider} from 'react-native-paper';
 import Navigation from './src/navigation/Navigation';
 import {StatusBar} from 'react-native';
 
+import './src/localization/i18n';
 import MoviesTheme from './src/theme/Theme';
 import {RootStackParamList} from './src/navigation/StackNavigation';
 import PreferencesContext from './src/context/PreferencesContext';
 import './src/utils/extension/StringExt';
+import * as RNLocalize from 'react-native-localize';
+import {useTranslation} from 'react-i18next';
 
-const App = () => {
+export default function App(): JSX.Element {
+  const {i18n} = useTranslation();
   const [theme, setTheme] = useState('light');
   const [drawerOptionSelected, setDrawerOptionSelected] = useState('home');
   const navRef = useNavigationContainerRef<RootStackParamList>();
@@ -35,6 +39,20 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [theme, drawerOptionSelected],
   );
+
+  const handleLocalizationChange = () => {
+    console.log(RNLocalize.getLocales()[0].languageCode);
+    i18n.changeLanguage(RNLocalize.getLocales()[0].languageCode);
+  };
+
+  useEffect(() => {
+    RNLocalize.addEventListener('change', handleLocalizationChange);
+    return () => {
+      RNLocalize.removeEventListener('change', handleLocalizationChange);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <PreferencesContext.Provider value={preference}>
       <PaperProvider
@@ -59,5 +77,4 @@ const App = () => {
       </PaperProvider>
     </PreferencesContext.Provider>
   );
-};
-export default App;
+}

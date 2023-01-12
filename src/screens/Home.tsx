@@ -2,6 +2,7 @@ import React, {useState, useEffect, useContext} from 'react';
 import {View, ScrollView, StyleSheet, FlatList} from 'react-native';
 import axios, {AxiosError} from 'axios';
 import {ActivityIndicator, Text, Title} from 'react-native-paper';
+import {useTranslation} from 'react-i18next';
 
 import useNewMovies from '../hooks/useNewMovies';
 import CarouselVertical from '../components/CarouselVertical';
@@ -13,6 +14,7 @@ import CarouselMulti from '../components/CarouselMulti';
 const ACTION_GENRE_ID: number = 28;
 
 export default function Home() {
+  const {t} = useTranslation();
   const {isLoading, newMovies} = useNewMovies();
   const [genres, setGenres] = useState<Genre[]>([]);
   const [moviesByGenre, setMoviesByGenre] = useState<Movie[]>([]);
@@ -50,7 +52,7 @@ export default function Home() {
       )}
       {newMovies && (
         <View style={styles.news}>
-          <Title style={styles.newsTitle}>New Movies</Title>
+          <Title style={styles.newsTitle}>{t('home.title')}</Title>
           <CarouselVertical movies={newMovies} />
         </View>
       )}
