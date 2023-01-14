@@ -45,7 +45,6 @@ export default function Search() {
       console.log(error);
     }
   };
-  //console.log(movies);
   return (
     <SafeAreaView>
       <View style={styles.container}>
