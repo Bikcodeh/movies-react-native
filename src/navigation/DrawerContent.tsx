@@ -1,5 +1,9 @@
 import React, {useContext} from 'react';
-import {DrawerContentComponentProps, DrawerContentScrollView} from '@react-navigation/drawer';
+import {
+  DrawerContentComponentProps,
+  DrawerContentScrollView,
+} from '@react-navigation/drawer';
+import {useTranslation} from 'react-i18next';
 import {StyleSheet, View} from 'react-native';
 import {Drawer, Text, Switch, TouchableRipple} from 'react-native-paper';
 import usePreferences from '../hooks/usePreferences';
@@ -8,46 +12,48 @@ import PreferencesContext from '../context/PreferencesContext';
 interface Props extends DrawerContentComponentProps {}
 
 export default function DrawerContent(props: Props) {
+  const {t} = useTranslation();
   const {theme, toggleTheme} = usePreferences();
   const {navigation} = props;
   const {drawerOptionSelected, setCurrentDrawerOption} =
     useContext(PreferencesContext);
 
+  const navigate = (screen: string) => {
+    setCurrentDrawerOption(screen);
+    navigation.navigate(screen);
+  };
+
   return (
     <DrawerContentScrollView>
       <Drawer.Section>
         <Drawer.Item
-          label="Home"
+          label={t('screens.home')}
           active={drawerOptionSelected === 'home'}
-          onPress={() => {
-            setCurrentDrawerOption('home');
-            navigation.navigate('home');
-          }}
+          onPress={() => navigate('home')}
         />
         <Drawer.Item
-          label="Popular"
+          label={t('screens.popular')}
           active={drawerOptionSelected === 'popular'}
-          onPress={() => {
-            setCurrentDrawerOption('popular');
-            navigation.navigate('popular');
-          }}
+          onPress={() => navigate('popular')}
         />
         <Drawer.Item
-          label="News"
+          label={t('screens.news')}
           active={drawerOptionSelected === 'news'}
-          onPress={() => {
-            setCurrentDrawerOption('news');
-            navigation.navigate('news');
-          }}
+          onPress={() => navigate('news')}
         />
       </Drawer.Section>
-      <Drawer.Section title="Options">
+      <Drawer.Section title={t('drawer.options') || 'Options'}>
         <TouchableRipple>
           <View style={styles.preference}>
-            <Text>Dark theme</Text>
+            <Text>{t('drawer.darkMode')}</Text>
             <Switch value={theme === 'dark'} onChange={toggleTheme} />
           </View>
         </TouchableRipple>
+        <Drawer.Item
+          label={t('drawer.settings')}
+          active={drawerOptionSelected === 'settings'}
+          onPress={() => navigate('settings')}
+        />
       </Drawer.Section>
     </DrawerContentScrollView>
   );
@@ -55,7 +61,8 @@ export default function DrawerContent(props: Props) {
 
 const styles = StyleSheet.create({
   preference: {
-    paddingHorizontal: 16,
+    paddingStart: 28,
+    paddingEnd: 16,
     paddingVertical: 12,
     display: 'flex',
     flexDirection: 'row',

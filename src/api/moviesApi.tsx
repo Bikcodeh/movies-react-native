@@ -1,5 +1,6 @@
 import axios, {AxiosRequestConfig} from 'axios';
-import {API_HOST, API_KEY, LANG} from '../utils/constants.js';
+import {API_HOST, API_KEY} from '../utils/constants.js';
+import {getDeviceLang} from '../utils/Util';
 import {
   GenresResponse,
   Genre,
@@ -15,7 +16,7 @@ export const moviesApi = axios.create({
 
 moviesApi.interceptors.request.use(
   function (res: AxiosRequestConfig<any>) {
-    res.params = {...res.params, api_key: API_KEY, language: LANG};
+    res.params = {...res.params, api_key: API_KEY, language: getDeviceLang()};
     return res;
   },
   function (error: any) {
@@ -24,21 +25,17 @@ moviesApi.interceptors.request.use(
 );
 
 export function getGenresByMovie(genresId: Number[]): Promise<string[]> {
-  return moviesApi
-    .get<GenresResponse>(
-      `/genre/movie/list?api_key=${API_KEY}&language=${LANG}`,
-    )
-    .then(response => {
-      const genres: string[] = [];
-      genresId.forEach(item => {
-        response.data.genres.forEach(genre => {
-          if (item === genre.id) {
-            genres.push(genre.name);
-          }
-        });
+  return moviesApi.get<GenresResponse>(`/genre/movie/list?`).then(response => {
+    const genres: string[] = [];
+    genresId.forEach(item => {
+      response.data.genres.forEach(genre => {
+        if (item === genre.id) {
+          genres.push(genre.name);
+        }
       });
-      return genres;
     });
+    return genres;
+  });
 }
 
 export function getGenres(): Promise<Genre[]> {

@@ -57,7 +57,7 @@ export default function Home() {
         </View>
       )}
       <View style={styles.genres}>
-        <Title style={styles.genresTitle}>Genre</Title>
+        <Title style={styles.genresTitle}>{t('home.genre')}</Title>
         <FlatList
           initialNumToRender={6}
           maxToRenderPerBatch={10}

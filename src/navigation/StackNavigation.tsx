@@ -10,12 +10,14 @@ import {Movie as MovieI} from '../interfaces/movieinterfaces';
 import {getActiveRouteState} from '../utils/RouteName';
 import PreferencesContext from '../context/PreferencesContext';
 import {DrawerScreenProps} from '@react-navigation/drawer';
+import Settings from '../screens/Settings';
 
 export type RootStackParamList = {
   home: undefined;
   search: undefined;
   news: undefined;
   popular: undefined;
+  settings: undefined;
   movie: {movie: MovieI};
 };
 
@@ -92,6 +94,14 @@ export default function StackNavigation(props: Props) {
       <Stack.Screen
         name="movie"
         component={Movie}
+        options={{
+          title: '',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="settings"
+        component={Settings}
         options={{
           title: '',
           headerShown: false,

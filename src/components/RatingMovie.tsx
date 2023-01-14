@@ -2,6 +2,7 @@ import React from 'react';
 import {View, StyleSheet, ViewStyle} from 'react-native';
 import {Title, Text} from 'react-native-paper';
 import {Rating} from 'react-native-ratings';
+import {useTranslation} from 'react-i18next';
 import usePreferences from '../hooks/usePreferences';
 import starDark from '../assets/png/starDark.png';
 import starLight from '../assets/png/starLight.png';
@@ -17,6 +18,7 @@ export default function MovieRating({
   voteCount,
   customStyles,
 }: MovieRatingProps) {
+  const {t} = useTranslation();
   const {theme} = usePreferences();
   const media = voteAverage / 2;
   return (
@@ -34,7 +36,9 @@ export default function MovieRating({
         />
         <Text>{Math.round(media * 10) / 10}</Text>
       </View>
-      <Title style={{fontSize: 12}}>{voteCount} votes</Title>
+      <Title style={{fontSize: 12}}>
+        {voteCount} {t('detail.votes')}
+      </Title>
     </View>
   );
 }

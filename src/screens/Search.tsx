@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {SafeAreaView, StyleSheet, View, FlatList} from 'react-native';
 import {Movie} from '../interfaces/movieinterfaces';
 import {searchMovies} from '../api/moviesApi';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useNavigationState} from '@react-navigation/native';
 import {DrawerNavigationProp} from '@react-navigation/drawer';
 import {DrawerParamList} from '../navigation/Navigation';
 import {IconButton, Searchbar} from 'react-native-paper';
@@ -12,12 +12,17 @@ import {RootStackParamList} from '../navigation/StackNavigation';
 import usePreferences from '../hooks/usePreferences';
 
 export default function Search() {
+  const navigationState = useNavigationState(state => state);
   const navigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
   const navigationStack =
     useNavigation<NativeStackNavigationProp<RootStackParamList, 'search'>>();
   const [movies, setMovies] = useState<Movie[]>([]);
   const [text, setText] = useState('');
   const {theme} = usePreferences();
+
+  const goToDetail = (movie: Movie) => {
+    navigationStack.navigate('movie', {movie});
+  };
 
   useEffect(() => {
     navigation.getParent()?.setOptions({
@@ -30,7 +35,7 @@ export default function Search() {
       });
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [navigationState.index]);
 
   const searchMoviesByQuery = async () => {
     try {
@@ -67,10 +72,7 @@ export default function Search() {
       <FlatList
         data={movies}
         renderItem={({item}) => (
-          <MovieItem
-            movie={item}
-            onClickMovie={movie => navigationStack.navigate('movie', {movie})}
-          />
+          <MovieItem movie={item} onClickMovie={movie => goToDetail(movie)} />
         )}
         maxToRenderPerBatch={15}
         initialNumToRender={15}

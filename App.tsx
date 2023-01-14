@@ -41,7 +41,6 @@ export default function App(): JSX.Element {
   );
 
   const handleLocalizationChange = () => {
-    console.log(RNLocalize.getLocales()[0].languageCode);
     i18n.changeLanguage(RNLocalize.getLocales()[0].languageCode);
   };
 

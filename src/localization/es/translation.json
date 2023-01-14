@@ -1,5 +1,26 @@
 {
     "home": {
-        "title": "Nuevas películas"
+        "title": "Nuevas películas",
+        "genre": "Genero"
+    },
+    "screens": {
+        "home": "Inicio",
+        "popular": "Populares",
+        "search": "Buscador",
+        "news": "Nuevas",
+        "settings": "Configuración"
+    },
+    "drawer": {
+        "options": "Opciones",
+        "darkMode": "Tema oscuro",
+        "settings": "Configuración"
+    },
+    "detail": {
+        "votes": "Votos",
+        "overview": "Sinopsis",
+        "releaseDate": "Lanzamiento:"
+    },
+    "settings": {
+        "language": "Idioma"
     }
 }

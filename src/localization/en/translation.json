@@ -1,5 +1,26 @@
 {
     "home": {
-        "title": "New Movies"
+        "title": "New Movies",
+        "genre": "Genre"
+    },
+    "screens": {
+        "home": "Home",
+        "popular": "Popular",
+        "search": "Search",
+        "news": "News",
+        "settings": "Settings"
+    },
+    "drawer": {
+        "options": "Options",
+        "darkMode": "Dark theme",
+        "settings": "Settings"
+    },
+    "detail": {
+        "votes": "Votes",
+        "overview": "Overview",
+        "releaseDate": "Release date:"
+    },
+    "settings": {
+        "language": "Language"
     }
 }

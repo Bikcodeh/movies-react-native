@@ -6,9 +6,10 @@ import {
   DrawerActions,
   NavigationContainerRefWithCurrent,
 } from '@react-navigation/native';
+import {useTranslation} from 'react-i18next';
 import {RootStackParamList} from './StackNavigation';
 import {IconButton} from 'react-native-paper';
-import {capitalize, isValidScreen} from '../utils/Util';
+import {isValidScreen} from '../utils/Util';
 
 export type DrawerParamList = {
   movies: undefined;
@@ -19,6 +20,7 @@ const Drawer = createDrawerNavigator<DrawerParamList>();
 interface Props extends NavigationContainerRefWithCurrent<RootStackParamList> {}
 
 export default function Navigation(myprops: Props) {
+  const {t} = useTranslation();
   const [routeName, setRouteName] = useState<string>('home');
   useEffect(() => {
     if (myprops.isReady()) {
@@ -39,14 +41,8 @@ export default function Navigation(myprops: Props) {
       />
     );
   };
-  const backButton = (screen: string) => {
-    return (
-      <IconButton
-        icon="arrow-left"
-        onPress={() => myprops.goBack()}
-        iconColor={screen === 'movie' ? 'white' : undefined}
-      />
-    );
+  const backButton = () => {
+    return <IconButton icon="arrow-left" onPress={() => myprops.goBack()} />;
   };
   return (
     <Drawer.Navigator
@@ -57,11 +53,10 @@ export default function Navigation(myprops: Props) {
         name="movies"
         component={StackNavigation}
         options={{
-          headerShown: true,
           headerLeft: () =>
-            isValidScreen(routeName) ? burgerMenu() : backButton(routeName),
+            isValidScreen(routeName) ? burgerMenu() : backButton(),
           headerRight: () => isValidScreen(routeName) && searchButton(),
-          title: routeName !== 'movie' ? capitalize(routeName) : '',
+          title: routeName !== 'movie' ? t(`screens.${routeName}`) || '' : '',
           headerTransparent: routeName !== 'movie' ? false : true,
         }}
       />

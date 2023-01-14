@@ -1,13 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {Image, ScrollView, StyleSheet, View} from 'react-native';
-import {RouteProp, useRoute} from '@react-navigation/native';
+import {Image, SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
+import {RouteProp, useRoute, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../navigation/StackNavigation';
+import {DrawerNavigationProp} from '@react-navigation/drawer';
+import {DrawerParamList} from '../navigation/Navigation';
 import ModalVideo from '../components/ModalVideo';
 import {IconButton, Title, Text} from 'react-native-paper';
+import {useTranslation} from 'react-i18next';
 import {getMovieById} from '../api/moviesApi';
 import MovieRating from '../components/RatingMovie';
 
 export default function Movie() {
+  const {t} = useTranslation();
+  const navigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
   const movie = useRoute<RouteProp<RootStackParamList, 'movie'>>().params.movie;
   const [showModal, setShowModal] = useState(false);
   const [movieDetail, setMovieDetail] = useState(movie);
@@ -27,40 +32,52 @@ export default function Movie() {
   };
 
   useEffect(() => {
+    navigation.getParent()?.setOptions({
+      headerShown: false,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     getMovie();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [movie.id]);
 
   return (
     <>
-      <ScrollView>
-        <RenderPoster posterPath={`${poster_path}`} />
-        <MovieTrailer setShowVideo={setVisibilityModal} />
-        <Title style={styles.title}>{title}</Title>
-        <View style={styles.genres}>
-          {genres &&
-            genres.map((genre, index) => {
-              return (
-                <Text key={genre.id} style={styles.genre}>
-                  {genre.name}
-                  {index !== genres.length - 1 && ', '}
-                </Text>
-              );
-            })}
-        </View>
-        <MovieRating
-          voteAverage={movieDetail.vote_average}
-          voteCount={movieDetail.vote_count}
-          customStyles={{marginHorizontal: 10}}
-        />
-        <View style={{flexDirection: 'column', marginHorizontal: 10}}>
-          <Title style={{fontSize: 16}}>Overview</Title>
-          <Text>{movie.overview}</Text>
-        </View>
-        <Text style={{marginHorizontal: 10, marginVertical: 10}}>
-          Release date: {movie.release_date}
-        </Text>
-      </ScrollView>
+      <SafeAreaView>
+        <ScrollView>
+          <RenderPoster
+            posterPath={`${poster_path}`}
+            onBack={() => navigation.goBack()}
+          />
+          <MovieTrailer setShowVideo={setVisibilityModal} />
+          <Title style={styles.title}>{title}</Title>
+          <View style={styles.genres}>
+            {genres &&
+              genres.map((genre, index) => {
+                return (
+                  <Text key={genre.id} style={styles.genre}>
+                    {genre.name}
+                    {index !== genres.length - 1 && ', '}
+                  </Text>
+                );
+              })}
+          </View>
+          <MovieRating
+            voteAverage={movieDetail.vote_average}
+            voteCount={movieDetail.vote_count}
+            customStyles={{marginHorizontal: 10}}
+          />
+          <View style={{flexDirection: 'column', marginHorizontal: 10}}>
+            <Title style={{fontSize: 16}}>{t('detail.overview')}</Title>
+            <Text>{movie.overview}</Text>
+          </View>
+          <Text style={{marginHorizontal: 10, marginVertical: 10}}>
+            {t('detail.releaseDate')} {movie.release_date}
+          </Text>
+        </ScrollView>
+      </SafeAreaView>
       <ModalVideo
         showModal={showModal}
         setShowModal={setVisibilityModal}
@@ -70,16 +87,37 @@ export default function Movie() {
   );
 }
 
-interface RenderPosterProps {
-  posterPath: string;
+interface BackButtonProps {
+  onBack: () => void;
 }
 
-const RenderPoster = ({posterPath}: RenderPosterProps) => {
+const BackButton = ({onBack}: BackButtonProps) => {
   return (
-    <Image
-      style={styles.posterPath}
-      source={{uri: posterPath.applyImageUrl()}}
+    <IconButton
+      style={{position: 'absolute', marginTop: 16, marginStart: 16}}
+      icon="arrow-left"
+      onPress={() => onBack()}
+      containerColor="#d9d9d9"
+      iconColor="#8997a5"
     />
+  );
+};
+
+interface RenderPosterProps {
+  posterPath: string;
+  onBack: () => void;
+}
+
+const RenderPoster = ({posterPath, onBack}: RenderPosterProps) => {
+  return (
+    <View>
+      <Image
+        style={styles.posterPath}
+        source={{uri: posterPath.applyImageUrl()}}
+        resizeMode="stretch"
+      />
+      <BackButton onBack={onBack} />
+    </View>
   );
 };
 
