@@ -98,7 +98,7 @@ const ModalLanguage = ({showModal, setShowModal}: ModalLanguageProps) => {
             </Button>
             {langSelected === (value as Lang).key ? (
               <Icon
-                style={{position: 'absolute', right: 110}}
+                style={{position: 'absolute', right: 100}}
                 name="checkmark-outline"
                 size={24}
                 color={theme === 'dark' ? '#fff' : '#000'}
