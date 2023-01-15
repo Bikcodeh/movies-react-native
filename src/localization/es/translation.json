@@ -21,6 +21,7 @@
         "releaseDate": "Lanzamiento:"
     },
     "settings": {
-        "language": "Idioma"
+        "language": "Idioma",
+        "selectLanguage": "Seleccione el idioma"
     }
 }

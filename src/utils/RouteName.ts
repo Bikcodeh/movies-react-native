@@ -1,4 +1,4 @@
-export const getActiveRouteState = function (route) {
+export const getActiveRouteState = function (route: any): string {
   if (
     !route.routes ||
     route.routes.length === 0 ||

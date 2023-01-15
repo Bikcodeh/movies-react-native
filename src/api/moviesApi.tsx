@@ -1,6 +1,7 @@
 import axios, {AxiosRequestConfig} from 'axios';
-import {API_HOST, API_KEY} from '../utils/constants.js';
-import {getDeviceLang} from '../utils/Util';
+import {API_HOST, API_KEY} from '../utils/constants';
+import {getLang, parseObject} from '../utils/Util';
+import {Lang} from '../interfaces/lang';
 import {
   GenresResponse,
   Genre,
@@ -15,8 +16,14 @@ export const moviesApi = axios.create({
 });
 
 moviesApi.interceptors.request.use(
-  function (res: AxiosRequestConfig<any>) {
-    res.params = {...res.params, api_key: API_KEY, language: getDeviceLang()};
+  async function (res: AxiosRequestConfig<any>) {
+    const data = await getLang();
+    const language = parseObject<Lang>(data);
+    res.params = {
+      ...res.params,
+      api_key: API_KEY,
+      language: language ? language.languageTag : 'en-US',
+    };
     return res;
   },
   function (error: any) {
